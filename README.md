@@ -1,1 +1,1 @@
-# LocalingFrontApi
+# LocalingClientApi
