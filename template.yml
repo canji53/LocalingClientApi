@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Front API for Localing.
+Description: Client API for Localing.
 
 Parameters:
   ServiceName:
@@ -22,7 +22,7 @@ Resources:
   ServerlessApi:
     Type: AWS::Serverless::Api
     Properties:
-      Name: !Sub ${ServiceName}-front-${Environment}-api
+      Name: !Sub ${ServiceName}-client-${Environment}-api
       StageName: !Ref Environment
       OpenApiVersion: 3.0.2
 
@@ -30,7 +30,7 @@ Resources:
   ServerlessLambdaLayer:
     Type: AWS::Serverless::LayerVersion
     Properties:
-      LayerName: !Sub ${ServiceName}-front-${Environment}-lambda-layer
+      LayerName: !Sub ${ServiceName}-client-${Environment}-lambda-layer
       ContentUri: .layer/
       CompatibleRuntimes:
         - nodejs12.x
@@ -40,7 +40,7 @@ Resources:
   ReadMediaList:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${ServiceName}-front-${Environment}-read-media-list
+      FunctionName: !Sub ${ServiceName}-client-${Environment}-read-media-list
       CodeUri: media-list/read
       Handler: app.readMediaList
       Layers:
@@ -59,7 +59,7 @@ Resources:
   ReadMediaListRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${ServiceName}-front-${Environment}-read-media-list-role
+      RoleName: !Sub ${ServiceName}-client-${Environment}-read-media-list-role
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -68,7 +68,7 @@ Resources:
             Principal:
               Service: lambda.amazonaws.com
       Policies:
-        - PolicyName: !Sub ${ServiceName}-front-${Environment}-read-media-list-policy
+        - PolicyName: !Sub ${ServiceName}-client-${Environment}-read-media-list-policy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
@@ -89,7 +89,7 @@ Resources:
   ReadContentList:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${ServiceName}-front-${Environment}-read-content-list
+      FunctionName: !Sub ${ServiceName}-client-${Environment}-read-content-list
       CodeUri: content-list/read
       Handler: app.readContentList
       Layers:
@@ -108,7 +108,7 @@ Resources:
   ReadContentListRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${ServiceName}-front-${Environment}-read-content-list-role
+      RoleName: !Sub ${ServiceName}-client-${Environment}-read-content-list-role
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -117,7 +117,7 @@ Resources:
             Principal:
               Service: lambda.amazonaws.com
       Policies:
-        - PolicyName: !Sub ${ServiceName}-front-${Environment}-read-content-list-policy
+        - PolicyName: !Sub ${ServiceName}-client-${Environment}-read-content-list-policy
           PolicyDocument:
             Version: 2012-10-17
             Statement:
