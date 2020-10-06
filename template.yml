@@ -1,0 +1,135 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Front API for Localing.
+
+Parameters:
+  ServiceName:
+    Type: String
+    Default: localing
+  Environment:
+    Type: String
+    Default: dev
+
+Globals:
+  Function:
+    Runtime: nodejs12.x
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+
+Resources:
+  # Serveless API
+  ServerlessApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub ${ServiceName}-front-${Environment}-api
+      StageName: !Ref Environment
+      OpenApiVersion: 3.0.2
+
+  # Lambda Layer
+  ServerlessLambdaLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: !Sub ${ServiceName}-front-${Environment}-lambda-layer
+      ContentUri: .layer/
+      CompatibleRuntimes:
+        - nodejs12.x
+      RetentionPolicy: Delete
+
+  # /media/list:[GET]
+  ReadMediaList:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${ServiceName}-front-${Environment}-read-media-list
+      CodeUri: media-list/read
+      Handler: app.readMediaList
+      Layers:
+        - !Ref ServerlessLambdaLayer
+      Role: !GetAtt ReadMediaListRole.Arn
+      Timeout: 10
+      MemorySize: 128
+      Events:
+        ReadMediaListEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ServerlessApi
+            Path: /media/list
+            Method: GET
+
+  ReadMediaListRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ServiceName}-front-${Environment}-read-media-list-role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: lambda.amazonaws.com
+      Policies:
+        - PolicyName: !Sub ${ServiceName}-front-${Environment}-read-media-list-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Resource: '*'
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+              - Resource:
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-media
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-media/index/*
+                Effect: Allow
+                Action:
+                  - dynamodb:*
+
+  # /content/list:[GET]
+  ReadContentList:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${ServiceName}-front-${Environment}-read-content-list
+      CodeUri: content-list/read
+      Handler: app.readContentList
+      Layers:
+        - !Ref ServerlessLambdaLayer
+      Role: !GetAtt ReadContentListRole.Arn
+      Timeout: 10
+      MemorySize: 128
+      Events:
+        ReadContentListEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ServerlessApi
+            Path: /content/list
+            Method: GET
+
+  ReadContentListRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub ${ServiceName}-front-${Environment}-read-content-list-role
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: lambda.amazonaws.com
+      Policies:
+        - PolicyName: !Sub ${ServiceName}-front-${Environment}-read-content-list-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Resource: '*'
+                Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+              - Resource:
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-content
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-content/index/*
+                Effect: Allow
+                Action:
+                  - dynamodb:*
