@@ -16,8 +16,8 @@ jobs:
     steps:
       - name: test
         run: |
-          echo $env
-          echo {{ $env }}
+          echo $ENVIRONMENT
+          echo {{ $ENVIRONMENT }}
 #       - name: Checkout
 #         uses: actions/checkout@v2
 
