@@ -1,0 +1,40 @@
+module.exports = {
+  resource: "/content/list/read",
+  path: "/content/list:[GET]",
+  httpMethod: "GET",
+  headers: null,
+  multiValueHeaders: null,
+  queryStringParameters: null,
+  multiValueQueryStringParameters: null,
+  pathParameters: null,
+  stageVariables: null,
+  requestContext: {
+    path: "",
+    accountId: "",
+    resourceId: "",
+    stage: "",
+    domainPrefix: "",
+    requestId: "",
+    identity: {
+      cognitoIdentityPoolId: null,
+      cognitoIdentityId: null,
+      apiKey: "",
+      cognitoAuthenticationType: null,
+      userArn: "",
+      apiKeyId: "",
+      userAgent: "",
+      accountId: "",
+      caller: "",
+      sourceIp: "",
+      accessKey: "",
+      cognitoAuthenticationProvider: null,
+      user: ""
+    },
+    domainName: "",
+    resourcePath: "/content/list/read",
+    httpMethod: "GET",
+    extendedRequestId: "",
+    apiId: ""
+  },
+  isBase64Encoded: false
+};

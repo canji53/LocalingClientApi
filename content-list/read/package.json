@@ -1,0 +1,21 @@
+{
+  "name": "content-list-read",
+  "version": "1.0.0",
+  "description": "/content/list:[GET]",
+  "main": "app.js",
+  "author": "Canji",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "test watch": "jest --watch"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.767.0",
+    "dayjs": "^1.9.1",
+    "querystring": "^0.2.0"
+  },
+  "devDependencies": {
+    "aws-lambda-mock-context": "^3.2.1",
+    "jest": "^26.4.2"
+  }
+}
