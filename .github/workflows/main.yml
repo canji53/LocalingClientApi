@@ -1,4 +1,4 @@
-name: Deployment for Localing Front API
+name: Deployment for Localing Cleint API
 
 on:
   push:
@@ -93,14 +93,14 @@ jobs:
           sam package \
             --template-file template.yml \
             --s3-bucket ${{ secrets.CFN_TEMPLATES_BUCKET }} \
-            --s3-prefix front-api-$ENVIRONMENT \
+            --s3-prefix client-api-$ENVIRONMENT \
             --output-template-file deploy.yml
 
       - name: SAM Deploy
         run: |
           sam deploy \
             --template-file deploy.yml \
-            --stack-name localing-front-api-$ENVIRONMENT \
+            --stack-name localing-client-api-$ENVIRONMENT \
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
                 Environment=$ENVIRONMENT
