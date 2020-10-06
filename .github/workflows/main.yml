@@ -14,78 +14,97 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Set up Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.7
-
-      - name: Install SAM
+      - name: test
         run: |
-          python -m pip install --upgrade pip
-          pip install aws-sam-cli
+          echo $env
+          echo {{ $env }}
+#       - name: Checkout
+#         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2-beta
-        with:
-          node-version: 12
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Build by SAM
-        run: |
-          sam build
+#       - name: Set up Python
+#         uses: actions/setup-python@v1
+#         with:
+#           python-version: 3.7
 
-      - name: Test content-list/read
-        run: |
-          cd content-list/read
-          npm install
-          npm run test
-          rm -rf __test__ node_modules
+#       - name: Install SAM
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install aws-sam-cli
 
-      - name: Test media-list/read
-        run: |
-          cd media-list/read
-          npm install
-          npm run test
-          rm -rf __test__ node_modules
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2-beta
+#         with:
+#           node-version: 12
 
-  # deploy:
-  #   needs: test
-  #   runs-on: ubuntu-latest
-  #   timeout-minutes: 5
+#       - name: Build by SAM
+#         run: |
+#           sam build
 
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v2
+#       - name: Test content-list/read
+#         run: |
+#           cd content-list/read
+#           npm install
+#           npm run test
+#           rm -rf __test__ node_modules
 
-  #     - name: Configure AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: ${{ secrets.AWS_REGION }}
+#       - name: Test media-list/read
+#         run: |
+#           cd media-list/read
+#           npm install
+#           npm run test
+#           rm -rf __test__ node_modules
 
-  #     - name: SAM Packaging
-  #       run: |
-  #         sam package \
-  #           --template-file template.yml \
-  #           --s3-bucket ${{ secrets.CFN_TEMPLATES_BUCKET }} \
-  #           --s3-prefix front-api-dev \
-  #           --output-template-file deploy.yml
+#   deploy:
+#     needs: build
+#     runs-on: ubuntu-latest
+#     timeout-minutes: 5
 
-  #     - name: SAM Deploy
-  #       run: |
-  #         sam deploy \
-  #           --template-file deploy.yml \
-  #           --stack-name localing-front-api-dev \
-  #           --capabilities CAPABILITY_NAMED_IAM \
-  #           --parameter-overrides \
-  #               Environment=dev
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v2
+
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v1
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ secrets.AWS_REGION }}
+
+#       - name: Set up Python
+#         uses: actions/setup-python@v1
+#         with:
+#           python-version: 3.7
+
+#       - name: Install SAM
+#         run: |
+#           python -m pip install --upgrade pip
+#           pip install aws-sam-cli
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2-beta
+#         with:
+#           node-version: 12
+
+#       - name: SAM Packaging
+#         run: |
+#           sam package \
+#             --template-file template.yml \
+#             --s3-bucket ${{ secrets.CFN_TEMPLATES_BUCKET }} \
+#             --s3-prefix front-api-$ENVIRONMENT \
+#             --output-template-file deploy.yml
+
+#       - name: SAM Deploy
+#         run: |
+#           sam deploy \
+#             --template-file deploy.yml \
+#             --stack-name localing-front-api-$ENVIRONMENT \
+#             --capabilities CAPABILITY_NAMED_IAM \
+#             --parameter-overrides \
+#                 Environment=$ENVIRONMENT
