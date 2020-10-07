@@ -57,6 +57,11 @@ jobs:
           npm run test
           rm -rf __test__ node_modules
 
+      - name: Install NPM for Lambda Layer
+        run: |
+          cd .layer/nodejs
+          npm install
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
