@@ -25,6 +25,10 @@ Resources:
       Name: !Sub ${ServiceName}-client-${Environment}-api
       StageName: !Ref Environment
       OpenApiVersion: 3.0.2
+      Cors:
+        AllowMethods: "'POST'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'*'"
 
   # Lambda Layer
   ServerlessLambdaLayer:
