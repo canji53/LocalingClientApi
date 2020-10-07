@@ -3,8 +3,11 @@ name: Deployment for Localing Cleint API
 on:
   push:
     branches:
-      - master
       - develop
+  pull_request:
+    branches: 
+      - develop
+      - master
 
 env:
   ENVIRONMENT: ${{ (github.ref == 'refs/heads/master' && 'prod') || (github.ref == 'refs/heads/develop' && 'dev') }}
@@ -57,11 +60,6 @@ jobs:
           npm run test
           rm -rf __test__ node_modules
 
-      - name: Install NPM for Lambda Layer
-        run: |
-          cd .layer/nodejs
-          npm install
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -92,6 +90,11 @@ jobs:
         uses: actions/setup-node@v2-beta
         with:
           node-version: 12
+
+      - name: Install NPM for Lambda Layer
+        run: |
+          cd .layer/nodejs
+          npm install
 
       - name: SAM Packaging
         run: |
