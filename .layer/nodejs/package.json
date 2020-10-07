@@ -7,7 +7,6 @@
   "license": "MIT",
   "scripts": {},
   "dependencies": {
-    "aws-sdk": "^2.767.0",
     "dayjs": "^1.9.1",
     "querystring": "^0.2.0"
   },
