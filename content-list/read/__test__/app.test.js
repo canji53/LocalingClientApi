@@ -23,7 +23,7 @@ describe('app.readContentList()', () => {
         order: 'false'
       };
       event.queryStringParameters = queryStringParameters; // クエリパラメータに追加
-      const response = await app.readContentList(event, context(), function(){});
+      const response = await app.readContentList(event, context({timeout: 10}), function(){});
       expect(response.statusCode).toBe(200);
     });
   });
