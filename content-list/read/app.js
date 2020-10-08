@@ -78,16 +78,33 @@ module.exports.readContentList = async (event, context) => {
 
     /**
      * DynamoDBへのクエリパラメータを設定
-     *
-     * 以下のクエリーは当初 "Scan"を想定していたが、
-     * Scanでは並び替えができず、ランダムにコンテンツが取得される結果になった。
-     * 並び替えたい場合、"Query"で取得する必要がある。
-     * ところが、Queryでは、"KeyConditionExpression"で条件式を示す必要があるのだが、
-     * 欲しいのは全てのデータなため、わざわざ条件を示す必要がない。
-     * 仕方がないので、ここでは現在時刻を取得して、それより前に登録されたデータを条件にすることで、
-     * 擬似的に全データを取得するクエリーを実現する。
      */
     const nowTimestamp = dayjs().unix(); // 現在時間の取得
+
+    // 公開状態のメディアのIDを取得
+    const mediaInformation = await documentClient
+      .query({
+        TableName: `localing-${process.env.ENVIRONMENT}-inoreader-media`,
+        IndexName: 'public',
+        ExpressionAttributeNames : {
+          '#ps'  : 'publicState'
+        },
+        ExpressionAttributeValues: {
+          ':publicState': 1
+        },
+        KeyConditionExpression: '#ps = :publicState',
+        ProjectionExpression: 'id',
+        ExclusiveStartKey: null,
+        Limit: null,
+        ScanIndexForward: order
+      })
+      .promise()
+      .then((data) => { return data.Items; })
+      .catch((error) => { throw error; });
+
+    console.log(mediaInformation);
+
+    // 基本形
     let queryParam = {
       TableName: `localing-${process.env.ENVIRONMENT}-inoreader-content`,
       IndexName: 'public',
@@ -105,21 +122,20 @@ module.exports.readContentList = async (event, context) => {
       ScanIndexForward: order
     };
 
+    // 公開状態のメディアに絞る
+    queryParam.ExpressionAttributeNames['#mi'] = 'mediaId';
+    queryParam.FilterExpression = '';
+    mediaInformation.map((media, index) => {
+      queryParam.ExpressionAttributeValues[`:media_${index}`] = media.Id;
+      if (index > 0) { queryParam.FilterExpression += ` AND `; }
+      queryParam.FilterExpression += `contains (#mi, :media_${index})`;
+    })
+
     // 県が設定されている場合は、prefectureで絞り込んで、そうでない場合は何も絞り込まず全て取得
     if (prefecture !== null) {
-      if (typeof(queryParam.ExpressionAttributeValues) === 'undefined') {
-        queryParam.ExpressionAttributeValues = {};
-      }
-
       queryParam.ExpressionAttributeNames['#pl'] = 'prefectureList';
       queryParam.ExpressionAttributeValues[':prefecture'] = prefecture;
-
-      if (typeof(queryParam.FilterExpression) !== 'undefined') {
-        queryParam.FilterExpression = queryParam.FilterExpression + ' AND ';
-        queryParam.FilterExpression = queryParam.FilterExpression + 'contains (#pl, :prefecture)';
-      } else {
-        queryParam.FilterExpression = 'contains (#pl, :prefecture)';
-      }
+      queryParam.FilterExpression += ' AND contains (#pl, :prefecture)';
     }
 
     console.log(queryParam);
