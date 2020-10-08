@@ -13,9 +13,9 @@ describe('app.readContentList()', () => {
     process.env.ENVIRONMENT = 'dev';
   });
 
-  describe('[成功]DynamoDBに格納されたメディアのリストを取得', () => {
+  describe('[成功]DynamoDBに格納されたコンテントのリストを取得', () => {
 
-    test('メディアリストを取得', async () => {
+    test('コンテントリストを取得', async () => {
       const queryStringParameters = {
         lastEvaluatedKey: null,
         limit: 5,
