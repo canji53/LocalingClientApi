@@ -122,11 +122,11 @@ module.exports.readContentList = async (event, context) => {
       ScanIndexForward: order
     };
 
-    // 公開状態のメディアに絞る
+    // 公開状態のメディアにクエリを絞る
     queryParam.ExpressionAttributeNames['#mi'] = 'mediaId';
     queryParam.FilterExpression = '';
     mediaInformation.map((media, index) => {
-      queryParam.ExpressionAttributeValues[`:media_${index}`] = media.Id;
+      queryParam.ExpressionAttributeValues[`:media_${index}`] = media.id;
       if (index > 0) { queryParam.FilterExpression += ` AND `; }
       queryParam.FilterExpression += `contains (#mi, :media_${index})`;
     })
