@@ -1,7 +1,6 @@
 'use strict';
 const AWS = require('aws-sdk');
 const dayjs = require('dayjs');
-const qs = require('querystring');
 
 /**
  * DynamoDBからコンテンツ一覧を取得する Lambda
@@ -45,8 +44,7 @@ module.exports.readContentList = async (event, context) => {
     let lastEvaluatedKey = null;
     let tmpLastEvaluatedKey = event.queryStringParameters.lastEvaluatedKey;
     if (isExists(tmpLastEvaluatedKey)) {
-      tmpLastEvaluatedKey = JSON.parse(JSON.stringify(qs.parse(tmpLastEvaluatedKey)));
-      tmpLastEvaluatedKey.publishedDate = parseInt(tmpLastEvaluatedKey.publishedDate);
+      tmpLastEvaluatedKey = JSON.parse(tmpLastEvaluatedKey);
       if (typeof(tmpLastEvaluatedKey) === 'object') {
         lastEvaluatedKey = tmpLastEvaluatedKey;
       }
@@ -105,7 +103,7 @@ module.exports.readContentList = async (event, context) => {
       ExclusiveStartKey: lastEvaluatedKey,
       Limit: limit,
       ScanIndexForward: order
-    }
+    };
 
     // 県が設定されている場合は、prefectureで絞り込んで、そうでない場合は何も絞り込まず全て取得
     if (prefecture !== null) {
@@ -155,6 +153,7 @@ module.exports.readContentList = async (event, context) => {
       isBase64Encoded: false,
     };
   } catch (error) {
+    console.log(error);
     return {
       statusCode: 400,
       headers: {
@@ -169,14 +168,12 @@ module.exports.readContentList = async (event, context) => {
   }
 }
 
-
 const isExists = (value) => {
   if (!(typeof(value) === 'undefined' || value === null || value === '')) {
     return true;
   }
   return false;
-}
-
+};
 
 const isStringBoolean = (stringBoolean) => {
   const lowerStringBoolean = stringBoolean.toLowerCase();
@@ -184,9 +181,9 @@ const isStringBoolean = (stringBoolean) => {
     return true;
   }
   return false;
-}
+};
 
 const toBooleanFromStringBoolean = (stringBoolean) => {
   return stringBoolean.toLowerCase() === 'true';
-}
+};
 
