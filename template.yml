@@ -134,6 +134,7 @@ Resources:
               - Resource:
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-content
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-content/index/public
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-media/index/public
                 Effect: Allow
                 Action:
                   - dynamodb:*
