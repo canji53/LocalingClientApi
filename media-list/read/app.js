@@ -57,7 +57,7 @@ module.exports.readMediaList = async (event) => {
       ExclusiveStartKey: null,
       Limit: null,
       ScanIndexForward: order
-    }
+    };
 
     console.log(queryParam);
 
@@ -89,6 +89,7 @@ module.exports.readMediaList = async (event) => {
     };
 
   } catch (error) {
+    console.log(error);
     return {
       statusCode: 400,
       headers: {
@@ -103,13 +104,12 @@ module.exports.readMediaList = async (event) => {
   }
 }
 
-
 const isExists = (value) => {
   if (!(typeof(value) === 'undefined' || value === null || value === '')) {
     return true;
   }
   return false;
-}
+};
 
 const isStringBoolean = (stringBoolean) => {
   const lowerStringBoolean = stringBoolean.toLowerCase();
@@ -117,8 +117,8 @@ const isStringBoolean = (stringBoolean) => {
     return true;
   }
   return false;
-}
+};
 
 const toBooleanFromStringBoolean = (stringBoolean) => {
   return stringBoolean.toLowerCase() === 'true';
-}
+};
