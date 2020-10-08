@@ -84,7 +84,7 @@ Resources:
                   - logs:PutLogEvents
               - Resource:
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-media
-                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-media/index/*
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-media/index/public
                 Effect: Allow
                 Action:
                   - dynamodb:*
@@ -133,7 +133,7 @@ Resources:
                   - logs:PutLogEvents
               - Resource:
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-content
-                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-content/index/*
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${ServiceName}-${Environment}-inoreader-content/index/public
                 Effect: Allow
                 Action:
                   - dynamodb:*
