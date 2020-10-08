@@ -123,19 +123,26 @@ module.exports.readContentList = async (event, context) => {
     };
 
     // 公開状態のメディアにクエリを絞る
-    queryParam.ExpressionAttributeNames['#mi'] = 'mediaId';
-    queryParam.FilterExpression = '';
+    let publicMediaExpression = '';
     mediaInformation.map((media, index) => {
       queryParam.ExpressionAttributeValues[`:media_${index}`] = media.id;
-      if (index > 0) { queryParam.FilterExpression += ` AND `; }
-      queryParam.FilterExpression += `contains (#mi, :media_${index})`;
+      if (index > 0) { publicMediaExpression += ` OR `; }
+      publicMediaExpression += `contains (#mi, :media_${index})`;
     })
+    if (publicMediaExpression !== '') {
+      queryParam.ExpressionAttributeNames['#mi'] = 'mediaId';
+      queryParam.FilterExpression = `(${publicMediaExpression})`;
+    }
 
     // 県が設定されている場合は、prefectureで絞り込んで、そうでない場合は何も絞り込まず全て取得
     if (prefecture !== null) {
       queryParam.ExpressionAttributeNames['#pl'] = 'prefectureList';
       queryParam.ExpressionAttributeValues[':prefecture'] = prefecture;
-      queryParam.FilterExpression += ' AND contains (#pl, :prefecture)';
+      if (typeof(queryParam.FilterExpression) !== 'undefined') {
+        queryParam.FilterExpression += ' AND contains (#pl, :prefecture)';
+      } else {
+        queryParam.FilterExpression = 'contains (#pl, :prefecture)';
+      }
     }
 
     console.log(queryParam);
