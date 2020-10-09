@@ -152,6 +152,8 @@ Resources:
       FunctionName: !Sub ${ServiceName}-client-${Environment}-message-post
       CodeUri: message
       Handler: app.sendMessage
+      Layers:
+        - !Ref ServerlessLambdaLayer
       Environment:
         Variables:
           SENDGRID_API_KEY: !Ref SendGridApiKey
