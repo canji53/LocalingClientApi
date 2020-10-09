@@ -59,11 +59,21 @@ jobs:
           npm install
           npm run test
           rm -rf __test__ node_modules
+      
+      - name: Test message
+        env:
+          SENDFRID_API_KEY: ${{ secrets.SENDGRID_API_KEY }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+          FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+        run: |
+          cd message
+          npm install
+          npm run test
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
       - name: Checkout
@@ -112,3 +122,5 @@ jobs:
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
                 Environment=$ENVIRONMENT
+                SendGridApiKey=${{ secrets.SENDGRID_API_KEY }}
+                ToEmail=${{ secrets.TO_EMAIL }}
