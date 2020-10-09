@@ -1,0 +1,40 @@
+module.exports = {
+  resource: "/message",
+  path: "/message:[POST]",
+  httpMethod: "POST",
+  headers: null,
+  multiValueHeaders: null,
+  queryStringParameters: null,
+  multiValueQueryStringParameters: null,
+  pathParameters: null,
+  stageVariables: null,
+  requestContext: {
+    path: "",
+    accountId: "",
+    resourceId: "",
+    stage: "",
+    domainPrefix: "",
+    requestId: "",
+    identity: {
+      cognitoIdentityPoolId: null,
+      cognitoIdentityId: null,
+      apiKey: "",
+      cognitoAuthenticationType: null,
+      userArn: "",
+      apiKeyId: "",
+      userAgent: "",
+      accountId: "",
+      caller: "",
+      sourceIp: "",
+      accessKey: "",
+      cognitoAuthenticationProvider: null,
+      user: ""
+    },
+    domainName: "",
+    resourcePath: "/message",
+    httpMethod: "POST",
+    extendedRequestId: "",
+    apiId: ""
+  },
+  isBase64Encoded: false
+};
