@@ -121,6 +121,6 @@ jobs:
             --stack-name localing-client-api-$ENVIRONMENT \
             --capabilities CAPABILITY_NAMED_IAM \
             --parameter-overrides \
-                Environment=$ENVIRONMENT
-                SendGridApiKey=${{ secrets.SENDGRID_API_KEY }}
+                Environment=$ENVIRONMENT \
+                SendGridApiKey=${{ secrets.SENDGRID_API_KEY }} \
                 ToEmail=${{ secrets.TO_EMAIL }}
