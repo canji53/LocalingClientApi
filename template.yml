@@ -9,6 +9,12 @@ Parameters:
   Environment:
     Type: String
     Default: dev
+  SendGridApiKey:
+    Type: String
+    NoEcho: true
+  ToEmail:
+    Type: String
+    NoEcho: true
 
 Globals:
   Function:
@@ -138,3 +144,22 @@ Resources:
                 Effect: Allow
                 Action:
                   - dynamodb:*
+
+  # /message:[POST]
+  Message:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${ServiceName}-client-${Environment}-message-post
+      CodeUri: message
+      Handler: app.sendMessage
+      Environment:
+        Variables:
+          SENDGRID_API_KEY: !Ref SendGridApiKey
+          TO_EMAIL: !Ref ToEmail
+      Events:
+        MessageEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ServerlessApi
+            Path: /message
+            Method: POST
