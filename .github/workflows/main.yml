@@ -8,6 +8,7 @@ on:
     branches: 
       - develop
       - master
+    types: [closed]
 
 env:
   ENVIRONMENT: ${{ (github.ref == 'refs/heads/master' && 'prod') || (github.ref == 'refs/heads/develop' && 'dev') }}
