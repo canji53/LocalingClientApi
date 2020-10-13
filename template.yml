@@ -31,6 +31,10 @@ Resources:
       Name: !Sub ${ServiceName}-client-${Environment}-api
       StageName: !Ref Environment
       OpenApiVersion: 3.0.2
+      Cors:
+        AllowMethods: "'GET, POST'"
+        AllowHeaders: "'Content-Type'"
+        AllowOrigin: "'https://*.localing.ml'"
 
   # Lambda Layer
   ServerlessLambdaLayer:
