@@ -7,8 +7,9 @@
   "license": "MIT",
   "scripts": {},
   "dependencies": {
-    "aws-sdk": "^2.767.0",
+    "@sendgrid/mail": "^7.2.6",
     "dayjs": "^1.9.1",
+    "email-validator": "^2.0.4",
     "querystring": "^0.2.0"
   },
   "devDependencies": {}

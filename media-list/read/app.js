@@ -57,7 +57,7 @@ module.exports.readMediaList = async (event) => {
       ExclusiveStartKey: null,
       Limit: null,
       ScanIndexForward: order
-    }
+    };
 
     console.log(queryParam);
 
@@ -80,6 +80,7 @@ module.exports.readMediaList = async (event) => {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Origin': '*.localing.ml'
       },
       body: JSON.stringify({
         mediaList: queryResponse.mediaList
@@ -88,10 +89,12 @@ module.exports.readMediaList = async (event) => {
     };
 
   } catch (error) {
+    console.log(error);
     return {
       statusCode: 400,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Origin': '*.localing.ml'
       },
       body: JSON.stringify({
         message: error.message
@@ -101,13 +104,12 @@ module.exports.readMediaList = async (event) => {
   }
 }
 
-
 const isExists = (value) => {
   if (!(typeof(value) === 'undefined' || value === null || value === '')) {
     return true;
   }
   return false;
-}
+};
 
 const isStringBoolean = (stringBoolean) => {
   const lowerStringBoolean = stringBoolean.toLowerCase();
@@ -115,8 +117,8 @@ const isStringBoolean = (stringBoolean) => {
     return true;
   }
   return false;
-}
+};
 
 const toBooleanFromStringBoolean = (stringBoolean) => {
   return stringBoolean.toLowerCase() === 'true';
-}
+};

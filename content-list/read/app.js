@@ -1,7 +1,6 @@
 'use strict';
 const AWS = require('aws-sdk');
 const dayjs = require('dayjs');
-const qs = require('querystring');
 
 /**
  * DynamoDBからコンテンツ一覧を取得する Lambda
@@ -45,8 +44,7 @@ module.exports.readContentList = async (event, context) => {
     let lastEvaluatedKey = null;
     let tmpLastEvaluatedKey = event.queryStringParameters.lastEvaluatedKey;
     if (isExists(tmpLastEvaluatedKey)) {
-      tmpLastEvaluatedKey = JSON.parse(JSON.stringify(qs.parse(tmpLastEvaluatedKey)));
-      tmpLastEvaluatedKey.publishedDate = parseInt(tmpLastEvaluatedKey.publishedDate);
+      tmpLastEvaluatedKey = JSON.parse(tmpLastEvaluatedKey);
       if (typeof(tmpLastEvaluatedKey) === 'object') {
         lastEvaluatedKey = tmpLastEvaluatedKey;
       }
@@ -80,16 +78,33 @@ module.exports.readContentList = async (event, context) => {
 
     /**
      * DynamoDBへのクエリパラメータを設定
-     *
-     * 以下のクエリーは当初 "Scan"を想定していたが、
-     * Scanでは並び替えができず、ランダムにコンテンツが取得される結果になった。
-     * 並び替えたい場合、"Query"で取得する必要がある。
-     * ところが、Queryでは、"KeyConditionExpression"で条件式を示す必要があるのだが、
-     * 欲しいのは全てのデータなため、わざわざ条件を示す必要がない。
-     * 仕方がないので、ここでは現在時刻を取得して、それより前に登録されたデータを条件にすることで、
-     * 擬似的に全データを取得するクエリーを実現する。
      */
     const nowTimestamp = dayjs().unix(); // 現在時間の取得
+
+    // 公開状態のメディアのIDを取得
+    const mediaInformation = await documentClient
+      .query({
+        TableName: `localing-${process.env.ENVIRONMENT}-inoreader-media`,
+        IndexName: 'public',
+        ExpressionAttributeNames : {
+          '#ps'  : 'publicState'
+        },
+        ExpressionAttributeValues: {
+          ':publicState': 1
+        },
+        KeyConditionExpression: '#ps = :publicState',
+        ProjectionExpression: 'id',
+        ExclusiveStartKey: null,
+        Limit: null,
+        ScanIndexForward: order
+      })
+      .promise()
+      .then((data) => { return data.Items; })
+      .catch((error) => { throw error; });
+
+    console.log(mediaInformation);
+
+    // 基本形
     let queryParam = {
       TableName: `localing-${process.env.ENVIRONMENT}-inoreader-content`,
       IndexName: 'public',
@@ -105,20 +120,26 @@ module.exports.readContentList = async (event, context) => {
       ExclusiveStartKey: lastEvaluatedKey,
       Limit: limit,
       ScanIndexForward: order
+    };
+
+    // 公開状態のメディアにクエリを絞る
+    let publicMediaExpression = '';
+    mediaInformation.map((media, index) => {
+      queryParam.ExpressionAttributeValues[`:media_${index}`] = media.id;
+      if (index > 0) { publicMediaExpression += ` OR `; }
+      publicMediaExpression += `contains (#mi, :media_${index})`;
+    })
+    if (publicMediaExpression !== '') {
+      queryParam.ExpressionAttributeNames['#mi'] = 'mediaId';
+      queryParam.FilterExpression = `(${publicMediaExpression})`;
     }
 
     // 県が設定されている場合は、prefectureで絞り込んで、そうでない場合は何も絞り込まず全て取得
     if (prefecture !== null) {
-      if (typeof(queryParam.ExpressionAttributeValues) === 'undefined') {
-        queryParam.ExpressionAttributeValues = {};
-      }
-
       queryParam.ExpressionAttributeNames['#pl'] = 'prefectureList';
       queryParam.ExpressionAttributeValues[':prefecture'] = prefecture;
-
       if (typeof(queryParam.FilterExpression) !== 'undefined') {
-        queryParam.FilterExpression = queryParam.FilterExpression + ' AND ';
-        queryParam.FilterExpression = queryParam.FilterExpression + 'contains (#pl, :prefecture)';
+        queryParam.FilterExpression += ' AND contains (#pl, :prefecture)';
       } else {
         queryParam.FilterExpression = 'contains (#pl, :prefecture)';
       }
@@ -146,6 +167,7 @@ module.exports.readContentList = async (event, context) => {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Origin': '*.localing.ml'
       },
       body: JSON.stringify({
         contentList: queryResponse.contentList,
@@ -154,10 +176,12 @@ module.exports.readContentList = async (event, context) => {
       isBase64Encoded: false,
     };
   } catch (error) {
+    console.log(error);
     return {
       statusCode: 400,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
+        'Access-Control-Allow-Origin': '*.localing.ml'
       },
       body: JSON.stringify({
         message: error.message
@@ -167,14 +191,12 @@ module.exports.readContentList = async (event, context) => {
   }
 }
 
-
 const isExists = (value) => {
   if (!(typeof(value) === 'undefined' || value === null || value === '')) {
     return true;
   }
   return false;
-}
-
+};
 
 const isStringBoolean = (stringBoolean) => {
   const lowerStringBoolean = stringBoolean.toLowerCase();
@@ -182,9 +204,9 @@ const isStringBoolean = (stringBoolean) => {
     return true;
   }
   return false;
-}
+};
 
 const toBooleanFromStringBoolean = (stringBoolean) => {
   return stringBoolean.toLowerCase() === 'true';
-}
+};
 
