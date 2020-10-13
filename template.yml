@@ -32,9 +32,9 @@ Resources:
       StageName: !Ref Environment
       OpenApiVersion: 3.0.2
       Cors:
-        AllowMethods: "'POST'"
+        AllowMethods: "'GET, POST'"
         AllowHeaders: "'Content-Type'"
-        AllowOrigin: "'*'"
+        AllowOrigin: "'*.localing.ml'"
 
   # Lambda Layer
   ServerlessLambdaLayer:
