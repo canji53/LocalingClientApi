@@ -167,7 +167,6 @@ module.exports.readContentList = async (event, context) => {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': '*.localing.ml'
       },
       body: JSON.stringify({
         contentList: queryResponse.contentList,
@@ -181,7 +180,6 @@ module.exports.readContentList = async (event, context) => {
       statusCode: 400,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': '*.localing.ml'
       },
       body: JSON.stringify({
         message: error.message

@@ -84,7 +84,6 @@ exports.sendMessage = async (event) => {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': '*.localing.ml'
       },
       body: JSON.stringify({
         message: 'メッセージを送信しました。',
@@ -99,7 +98,6 @@ exports.sendMessage = async (event) => {
       statusCode: 400,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': '*.localing.ml'
       },
       body: JSON.stringify({
         message: error.message,
