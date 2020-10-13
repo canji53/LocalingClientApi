@@ -80,7 +80,7 @@ module.exports.readMediaList = async (event) => {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': 'https://*.localing.ml'
+        'Access-Control-Allow-Origin': `${process.env.ALLOW_ORIGIN}`
       },
       body: JSON.stringify({
         mediaList: queryResponse.mediaList
@@ -94,7 +94,7 @@ module.exports.readMediaList = async (event) => {
       statusCode: 400,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': 'https://*.localing.ml'
+        'Access-Control-Allow-Origin': `${process.env.ALLOW_ORIGIN}`
       },
       body: JSON.stringify({
         message: error.message
