@@ -1,9 +1,6 @@
 name: Deployment for Localing Cleint API
 
 on:
-  push:
-    branches:
-      - develop
   pull_request:
     branches: 
       - develop
@@ -11,7 +8,7 @@ on:
     types: [closed]
 
 env:
-  ENVIRONMENT: ${{ (github.ref == 'refs/heads/master' && 'prod') || (github.ref == 'refs/heads/develop' && 'dev') }}
+  ENVIRONMENT: ${{ (github.base_ref == 'master' && 'prod') || (github.base_ref == 'develop' && 'dev') }}
 
 jobs:
   build:
