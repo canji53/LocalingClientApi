@@ -9,6 +9,10 @@ on:
 
 env:
   ENVIRONMENT: ${{ (github.base_ref == 'master' && 'prod') || (github.base_ref == 'develop' && 'dev') }}
+  ALLOW_ORIGIN: ${{ 
+    (github.base_ref == 'master' && 'https://www.localing.ml')  || 
+    (github.base_ref == 'develop' && 'https://dev.localing.ml') || 
+    '*' }}
 
 jobs:
   build:
@@ -121,4 +125,5 @@ jobs:
             --parameter-overrides \
                 Environment=$ENVIRONMENT \
                 SendGridApiKey=${{ secrets.SENDGRID_API_KEY }} \
-                ToEmail=${{ secrets.TO_EMAIL }}
+                ToEmail=${{ secrets.TO_EMAIL }} \
+                AllowOrigin=$ALLOW_ORIGIN

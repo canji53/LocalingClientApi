@@ -15,6 +15,9 @@ Parameters:
   ToEmail:
     Type: String
     NoEcho: true
+  AllowOrigin:
+    Type: String
+    NoEcho: true
 
 Globals:
   Function:
@@ -22,6 +25,7 @@ Globals:
     Environment:
       Variables:
         ENVIRONMENT: !Ref Environment
+        ALLOW_ORIGIN: !Ref AllowOrigin
 
 Resources:
   # Serveless API
@@ -34,7 +38,7 @@ Resources:
       Cors:
         AllowMethods: "'GET, POST'"
         AllowHeaders: "'Content-Type'"
-        AllowOrigin: "'*.localing.ml'"
+        AllowOrigin: !Sub "'${AllowOrigin}'"
 
   # Lambda Layer
   ServerlessLambdaLayer:
