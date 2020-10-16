@@ -1,8 +1,8 @@
 
 # ==================== Format ====================
-# :emoji: Subject
+# :emoji: 内容
 #
-# Commit body...
+# 追加の内容
 
 
 # ==================== Emojis ====================
@@ -19,12 +19,3 @@
 # 🆙  :up: パッケージアップデート（Pacakege or Libraries Update）
 # 📝  :memo:  ドキュメント・コメント（Documentation or Comment）
 # 📰  :newspaper: 記事（post）
-
-
-# ==== Messages ====
-# ADD      新規 ファイル・機能 追加
-# UPDATE   機能修正、既存機能追加（バグではない)
-# FIX      バグ修正
-# REMOVE   削除など
-# UPGRADE  バージョンアップ
-# REFACT   リファクタリング
